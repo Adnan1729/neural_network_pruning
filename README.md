@@ -49,7 +49,7 @@ After fine-tuning - Loss: 0.6662, Accuracy: 0.5880
 
 ### Weight Distribution Before Pruning
 
-![Weight Distribution Before Pruning](path_to_image1.png)
+![Weight Distribution Before Pruning](src/visualization/weight_distribution_before_pruning.png)
 
 This histogram shows the distribution of weight values across the three layers of the neural network before pruning:
 - Layer 1 (blue) and Layer 2 (orange) have weights mostly concentrated between -0.2 and 0.2, with a roughly symmetric distribution around zero.
@@ -59,7 +59,7 @@ This histogram shows the distribution of weight values across the three layers o
 
 ### Weight Distribution After Pruning
 
-![Weight Distribution After Pruning](path_to_image2.png)
+![Weight Distribution After Pruning](src/visualization/weight_distribution_after_pruning.png)
 
 This histogram shows a dramatic change in the weight distribution after pruning:
 - There's a massive spike at zero for all layers, indicating that many weights have been pruned (set to zero).
@@ -74,7 +74,7 @@ The contrast between these two graphs clearly demonstrates the effect of pruning
 
 ### Weight Distribution After Fine-tuning
 
-![Weight Distribution After Fine-tuning](path_to_image3.png)
+![Weight Distribution After Fine-tuning](src/visualization/weight_distribution_after_finetuning.png)
 
 This histogram shows the weight distribution after fine-tuning the pruned model:
 
