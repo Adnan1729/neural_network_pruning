@@ -47,25 +47,62 @@ Model sparsity: 38.69%
 After fine-tuning - Loss: 0.6662, Accuracy: 0.5880
 ```
 
-### Interpretation
+### Weight Distribution Before Pruning
 
-1. **Initial Performance**: The baseline model achieved an accuracy of 58.50% on the dummy dataset.
+![Weight Distribution Before Pruning](path_to_image1.png)
 
-2. **Post-Pruning Performance**: After pruning, the model's accuracy dropped to 55.20%. This slight decrease is expected, as we've removed a significant portion of the model's parameters.
+This histogram shows the distribution of weight values across the three layers of the neural network before pruning:
+- Layer 1 (blue) and Layer 2 (orange) have weights mostly concentrated between -0.2 and 0.2, with a roughly symmetric distribution around zero.
+- Layer 2 has a higher frequency of weights, indicating it's a larger layer.
+- Layer 3 (green) has very few weights, mostly concentrated near zero, which is typical for an output layer in a classification task.
+- The overall distribution is fairly typical for an initialized and trained neural network, with most weights clustered around zero and fewer extreme values.
 
-3. **Sparsity**: The pruning process resulted in a model with 38.69% sparsity. This means that over one-third of the model's parameters were set to zero, significantly reducing its size and computational requirements.
+### Weight Distribution After Pruning
 
-4. **Fine-tuning Results**: After fine-tuning the pruned model, the accuracy increased to 58.80%, which is slightly higher than the original model. This demonstrates that pruning, followed by fine-tuning, can sometimes lead to improved performance due to its regularization effect.
+![Weight Distribution After Pruning](path_to_image2.png)
 
-### Key Takeaways
+This histogram shows a dramatic change in the weight distribution after pruning:
+- There's a massive spike at zero for all layers, indicating that many weights have been pruned (set to zero).
+- The remaining non-zero weights maintain a distribution similar to the original, but with lower frequency.
+- Layer 2 (orange) still has the most non-zero weights, consistent with it being the largest layer.
+- Layer 3 (green) has almost all its weights pruned to zero, with very few remaining non-zero weights.
 
-1. **Effective Pruning**: The pruning technique successfully reduced the model size by setting 38.69% of the parameters to zero.
+The contrast between these two graphs clearly demonstrates the effect of pruning:
+1. Sparsification: A significant number of weights have been set to zero, creating a sparse network structure.
+2. Selective Pruning: The pruning process has predominantly affected weights close to zero, preserving larger weights that likely contribute more to the network's function.
+3. Layer-wise Impact: The pruning effect is visible across all layers, but with varying intensity. The output layer (Layer 3) has been pruned most aggressively, which is often desirable as it can help prevent overfitting.
 
-2. **Minimal Performance Impact**: Despite removing a significant portion of the parameters, the model's performance only dropped slightly after pruning.
+### Weight Distribution After Fine-tuning
 
-3. **Benefits of Fine-tuning**: Fine-tuning the pruned model not only recovered the lost performance but slightly improved upon the original accuracy.
+![Weight Distribution After Fine-tuning](path_to_image3.png)
 
-4. **Potential for Deployment**: The pruned and fine-tuned model maintains good performance while being significantly smaller, making it more suitable for deployment in resource-constrained environments.
+This histogram shows the weight distribution after fine-tuning the pruned model:
+
+- The large spike at zero remains prominent, indicating that many weights pruned to zero have stayed at zero during fine-tuning.
+- There's a noticeable redistribution of non-zero weights compared to the post-pruning distribution:
+  - The overall shape of the distribution for non-zero weights has become more spread out, particularly for Layer 1 (blue) and Layer 2 (orange).
+  - Layer 2 still has the highest frequency of non-zero weights, consistent with it being the largest layer.
+  - Layer 3 (green) maintains very few non-zero weights, similar to its state after pruning.
+- The range of weight values has slightly expanded, with some weights reaching values beyond the -0.4 to 0.4 range seen in the original distribution.
+
+
+### Key Observations
+
+1. Preservation of Sparsity: The fine-tuning process has largely maintained the sparsity achieved through pruning, as evidenced by the persistent large spike at zero.
+
+2. Weight Redistribution: Non-zero weights have been adjusted during fine-tuning, resulting in a more spread-out distribution. This suggests that the network has adapted its remaining weights to compensate for the pruned connections.
+
+3. Layer-specific Effects:
+   - Layers 1 and 2 show the most significant redistribution, indicating they play a crucial role in adapting to the pruned architecture.
+   - Layer 3 remains highly pruned with minimal changes, which may be beneficial for preventing overfitting in the output layer.
+
+4. Potential for Performance Recovery: The redistribution of weights suggests that the network has likely adjusted to optimize performance with its reduced parameter set. This could explain any recovery in accuracy observed after fine-tuning.
+
+5. Stability of Pruning: The persistence of the zero-weight spike indicates that the pruning was stable, with fine-tuning not reintroducing complexity to pruned connections.
+
+The progression from the original distribution through pruning and then fine-tuning demonstrates the effectiveness of the pruning process in creating a sparse network, as well as the ability of fine-tuning to optimize the remaining weights. This approach successfully combines the benefits of reduced model size through pruning with the performance optimization of fine-tuning.
+
+These visualizations provide valuable insights into how the network structure evolves through the pruning and fine-tuning process. They help us understand the interplay between sparsification and performance optimization, guiding further refinements in pruning strategies and fine-tuning approaches.
 
 ## Future Work
 
@@ -80,3 +117,7 @@ This example demonstrates a basic implementation of magnitude-based pruning. To 
 ## Conclusion
 
 Neural network pruning is a powerful technique for creating more efficient deep learning models. This example demonstrates that even with a simple magnitude-based pruning approach, we can significantly reduce model size while maintaining or even improving performance. As AI systems continue to grow in complexity, pruning and other model optimization techniques will play a crucial role in deploying these models in diverse and resource-constrained environments.
+
+The weight distribution visualizations clearly demonstrate the effectiveness of our pruning approach. By selectively setting a large number of weights to zero, we've significantly reduced the model's parameter count while potentially preserving its ability to make accurate predictions. This sparsification can lead to smaller model sizes and potentially faster inference times, which are crucial for deploying models in resource-constrained environments.
+
+However, it's important to note that the impact of pruning on model performance should be carefully evaluated. While these visualizations show successful sparsification, they should be considered alongside metrics like accuracy and loss to ensure that the pruned model still meets the required performance standards.
